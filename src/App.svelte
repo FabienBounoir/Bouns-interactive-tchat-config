@@ -239,4 +239,12 @@
     :global(body) {
 		background-color: #1F1F1F;
 	}
+
+    @media screen and (max-width: 850px) {
+        main{
+            display: grid;
+            grid-template-columns: auto;
+        }
+    }
+
 </style>

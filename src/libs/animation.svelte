@@ -182,4 +182,10 @@
         font-weight: bold;
     }
 
+    @media screen and (max-width: 850px) {
+        #rendu{
+            display: none;
+        }
+    }
+
 </style>
