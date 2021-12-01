@@ -1,11 +1,12 @@
 <script>
     import Animation from './libs/animation.svelte';
 
+    let scoops = 0;
     let yes = true
     let urlGenerator = "https://fabienbounoir.github.io/Bouns-Interaction-Twitch-Tchat/"
     let chaine = []
     let value = ""
-    let config = {message:false,subscription:false,deleted:false,subgift:false,cheer:false,ban:false,timeout:false,dark:false,avatar:false,animSub:false,animSubGift:false,animCheer:false}
+    let config = {message:false,subscription:false,deleted:false,subgift:false,cheer:false,ban:false,timeout:false,dark:false,avatar:false,left:0,animSub:false,animSubGift:false,animCheer:false}
 
     function add()
     {
@@ -110,6 +111,18 @@
 
         <h2>Design:</h2>
         <div class="check">
+            <div id="radio">
+                <label>
+                    <input type=radio bind:group={config.left} name="scoops" value={1}>
+                    Left
+                </label>
+                
+                <label>
+                    <input type=radio bind:group={config.left} name="scoops" value={0}>
+                    Right
+                </label>
+            </div>
+
             <div>
                 <label>
                     <input type=checkbox bind:checked={config.dark}>
@@ -156,7 +169,7 @@
     <div>
         {#if chaine.length > 0}
         <h2>Lien:</h2>
-            <p id='lien' on:click={copy}>{urlGenerator}?chaine={chaine.join()}{config.message ? ("&message=true") : ("")}{config.subscription ? ("&subscription=true") : ("")}{config.deleted ? ("&deleted=true") : ("")}{config.subgift ? ("&subgift=true") : ("")}{config.cheer ? ("&cheer=true") : ("")}{config.ban ? ("&ban=true") : ("")}{config.timeout ? ("&timeout=true") : ("")}{config.dark ? ("&dark=true") : ("")}{config.avatar ? ("&avatar=true") : ("")}{config.animSub ? ("&animsub=true") : ("")}{config.animSubGift ? ("&animsubgift=true") : ("")}{config.animCheer ? ("&animcheer=true") : ("")}</p>
+            <p id='lien' on:click={copy}>{urlGenerator}?chaine={chaine.join()}{config.message ? ("&message=true") : ("")}{config.subscription ? ("&subscription=true") : ("")}{config.deleted ? ("&deleted=true") : ("")}{config.subgift ? ("&subgift=true") : ("")}{config.cheer ? ("&cheer=true") : ("")}{config.ban ? ("&ban=true") : ("")}{config.timeout ? ("&timeout=true") : ("")}{config.dark ? ("&dark=true") : ("")}{config.avatar ? ("&avatar=true") : ("")}{config.left ? ("&left=true") : ("")}{config.animSub ? ("&animsub=true") : ("")}{config.animSubGift ? ("&animsubgift=true") : ("")}{config.animCheer ? ("&animcheer=true") : ("")}</p>
             <button on:click={copy}>copy link</button>
         {/if}
     </div>
@@ -168,6 +181,9 @@
         grid-template-columns: 0.5fr 1fr;
     }
 
+    #radio label{
+        margin-right: 1.5em;
+    }
     :root {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
         Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
