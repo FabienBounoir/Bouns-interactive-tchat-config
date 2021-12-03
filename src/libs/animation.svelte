@@ -95,33 +95,34 @@
     box-sizing: border-box;
     }
 
-    :global(body) {
+    /* :global(body) {
         overflow-x: hidden;
-	}
+	} */
 
     div#rendu {
-        position: fixed;
+        /* position: fixed;
         top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        left: 0; */
+        /* width: 100%;
+        height: 100%; */
         /* background-image: url("../assets/background.png"); */
         background-size: cover;
-        z-index: -1;
+        z-index: -10;
     }
 
     .gridApp{
-        display: grid;
+        display: flex;
         /* grid-template-areas: "text avatar"; */
-        grid-template-columns: 1fr 0.1fr;
-        position: absolute;
+        /* grid-template-columns: auto 0.1fr; */
+        /* position: fixed; */
         right: 0;
-        bottom: 0;
+        /* bottom: 40%;  */
+        float: right;
     }
 
     .textfields {
-        padding: 3em 3em 0em 3em;
-        margin: -3em -4em 0em -3em;
+        /* padding: 3em 3em 0em 3em;
+        margin: -3em -4em 0em -3em; */
 
         overflow: hidden; 
         overflow-y: auto; 
@@ -138,6 +139,7 @@
 
     ul{
         text-align: -webkit-right;
+        z-index: -10;
     }
 
     li{
@@ -151,20 +153,18 @@
         font-size: 20px;
         line-height: 23px;
 
-        width: max-content;
+        /* width: 95%; */
         max-width: 25em;
-
         text-align: right;
-
         transform-origin: bottom right;
-
         border-radius: 10px;
-
         color: #fff;
         border: 1px solid rgba( 255, 255, 255, 0.30 );
         background: rgba( 255, 255, 255, 0.25 );
         box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
         text-shadow: 0 2px 4px rgb(71 97 206 / 36%);
+        z-index: -10;
+        text-align: right;
     } 
 
     li p{
@@ -183,6 +183,43 @@
     }
 
     @media screen and (max-width: 850px) {
+        #rendu{
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 1300px) {
+        li{
+            list-style-type: none;
+
+            backdrop-filter: blur( 6px );
+            -webkit-backdrop-filter: blur( 6px );
+            margin: 10px;
+            font-style: normal;
+            font-weight: 300;
+            font-size: 20px;
+            line-height: 23px;
+
+            /* width: 75%; */
+            max-width: 25em;
+            text-align: right;
+            transform-origin: bottom right;
+            border-radius: 10px;
+            color: #fff;
+            border: 1px solid rgba( 255, 255, 255, 0.30 );
+            background: rgba( 255, 255, 255, 0.25 );
+            box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+            text-shadow: 0 2px 4px rgb(71 97 206 / 36%);
+        } 
+    }
+
+    @media screen and (max-width: 1100px) {
+        li{
+            /* width: 55%; */
+        }
+    }
+
+    @media screen and (max-width: 980px) {
         #rendu{
             display: none;
         }

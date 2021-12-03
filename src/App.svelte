@@ -1,31 +1,112 @@
 <script>
+    import { subscribe } from 'svelte/internal';
     import Animation from './libs/animation.svelte';
+
+    import { fade,scale,slide } from 'svelte/transition';
+    import { flip } from 'svelte/animate';
 
     let scoops = 0;
     let yes = true
     let urlGenerator = "https://fabienbounoir.github.io/Bouns-Interaction-Twitch-Tchat/"
+
     let chaine = []
-    let value = ""
+    let subCustom = []
+    let subGiftCustom = []
+    let cheers= []
+    let avatar= []
+
+    let chaineValue = ""
+    let subCustomValue = ""
+    let subGiftCustomValue = ""
+    let cheersValue = ""
+    let avatarValue = ""
     let config = {message:false,subscription:false,deleted:false,subgift:false,cheer:false,ban:false,timeout:false,dark:false,avatar:false,left:0,animSub:false,animSubGift:false,animCheer:false}
 
-    function add()
+    function addChaine(value)
     {
         if(value.length == 0) return
+        if(chaine.indexOf(value) !== -1) return
 
         chaine = [...chaine, value]
-        value = ""
+        chaineValue = ""
     }
 
-    function remove(value)
+    function removeChaine(value)
     {
         chaine = chaine.filter(items => items != value)
     }
 
+    function removeSub(value)
+    {
+        subCustom = subCustom.filter(items => items != value)
+    }
+
+    function addSub(value)
+    {
+        if(!/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(value)) return
+        if(value.length == 0) return
+        if(subCustom.indexOf(value) !== -1) return
+
+        subCustom = [...subCustom, value]
+        subCustomValue = ""
+    }
+
+
+    function removeSubGift(value)
+    {
+        subGiftCustom = subGiftCustom.filter(items => items != value)
+    }
+
+    function addSubGift(value)
+    {
+        if(!/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(value)) return
+        if(value.length == 0) return
+        if(subGiftCustom.indexOf(value) !== -1) return
+
+        subGiftCustom = [...subGiftCustom, value]
+        subGiftCustomValue = ""
+    }
+
+
+    function removeCheers(value)
+    {
+        cheers = cheers.filter(items => items != value)
+    }
+
+    function addCheers(value)
+    {
+        if(!/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(value)) return
+        if(value.length == 0) return
+        if(cheers.indexOf(value) !== -1) return
+
+        cheers = [...cheers, value]
+        cheersValue = ""
+    }
+
+    function removeAvatar(value)
+    {
+        avatar = avatar.filter(items => items != value)
+    }
+
+    function addAvatar(value)
+    {
+        if(!/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/.test(value)) return
+        if(value.length == 0) return
+        if(avatar.indexOf(value) !== -1) return
+
+        avatar = [...avatar, value]
+        avatarValue = ""
+    }
+
     function copy()
     {
-        var text = document.getElementById("lien").innerHTML.replace("amp;","");
+        // var text = document.getElementById("lien").innerHTML.replace("amp;","");
 
-        navigator.clipboard.writeText(replaceStr(text, ["amp;"], ['',' '])).then(function() {
+        console.log(`${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.dark ? ("&dark=true") : ("")}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}`)
+
+        let link = `${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.dark ? ("&dark=true") : ("")}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}${avatar.length ? (`&customAvatar=${avatar.join()}`) : ("")}`
+
+        navigator.clipboard.writeText(link).then(function() {
             console.log("Copie reussi")
         }, function() {
             console.log("Copie echoué")
@@ -41,225 +122,461 @@
 
 </script>
 
-<Animation />
 <main>
-    <div>
+    <div class="config">
         <h1>Configuration</h1>
-
-        <p>Chaine à écouter:</p>
-        <input class="check" type="text" placeholder="badbounstv" bind:value={value}/>
-        <button on:click={add}>add</button>
-
-        <div class="list">
-            {#each chaine as value}
-                <p on:click={() => {remove(value)}}>{value}</p>
-            {/each}
+        <div class="element">
+            <h2>Chaine</h2>
+            <div class="input">
+                <p>Chaine à écouter:</p>
+                <div class="inputComponent">
+                    <input class="check" type="text" placeholder="badbounstv" bind:value={chaineValue}/><button class="button" on:click={() => {addChaine(chaineValue)}}>add</button>
+                </div>
+                <div class="list">
+                    {#each chaine as value (value)}
+                        <p transition:scale on:click={() => {removeChaine(value)}}>{value}</p>
+                    {/each}
+                </div>
+            </div>
         </div>
-
-        <h2>Events:</h2>
-        <div class="check">
-            <div>
+        <div class="element">
+            <h2>Type</h2>
+            <div class="checkBox allBorder">
                 <label>
                     <input type=checkbox bind:checked={config.message}>
                     Messages
                 </label>
             </div>
-
-            <div>
-                <label>
+            <div class="checkBox topBorder">
+                <label class="labelDiv">
                     <input type=checkbox bind:checked={config.subscription}>
-                    subscription
+                    Sub
                 </label>
+                {#if config.subscription}
+                    <label class="labelDiv">
+                        <input type=checkbox bind:checked={config.animSub}>
+                        Animation
+                    </label>
+                {/if}
             </div>
-
-            <div>
-                <label>
+            <div transition:slide class="inputComponent">
+                <input class="check" type="text" disabled={!config.subscription || !config.animSub} placeholder="Lien" bind:value={subCustomValue}/><button class="button" on:click={() => {addSub(subCustomValue)}}>add</button>
+            </div>
+            <div class="list">
+                {#each subCustom as value (value)}
+                    <p transition:scale on:click={() => {removeSub(value)}}>{value.substr(value.substr(0, 4080).lastIndexOf("/"), value.length)}</p>
+                {/each}
+            </div>
+            <div class="checkBox topBorder">
+                <label class="labelDiv">
                     <input type=checkbox bind:checked={config.subgift}>
-                    subgift
+                    Sub Gift
                 </label>
+                {#if config.subgift}
+                    <label class="labelDiv">
+                        <input type=checkbox bind:checked={config.animSubGift}>
+                        Animation
+                    </label>
+                {/if}
             </div>
-
-            <div>
-                <label>
+            <div transition:slide class="inputComponent">
+                <input class="check" type="text" disabled={!config.subgift || !config.animSubGift} placeholder="Lien" bind:value={subGiftCustomValue}/><button class="button" on:click={() => {addSubGift(subGiftCustomValue)}}>add</button>
+            </div>
+            <div class="list">
+                {#each subGiftCustom as value (value)}
+                    <p transition:scale on:click={() => {removeSubGift(value)}}>{value.substr(value.substr(0, 4080).lastIndexOf("/"), value.length)}</p>
+                {/each}
+            </div>
+            <div class="checkBox topBorder">
+                <label class="labelDiv">
                     <input type=checkbox bind:checked={config.cheer}>
-                    cheer
+                    Cheer
                 </label>
+                {#if config.cheer}
+                    <label class="labelDiv">
+                        <input type=checkbox bind:checked={config.animCheer}>
+                        Animation
+                    </label>
+                {/if}
             </div>
-
-            <div>
-                <label>
-                    <input type=checkbox bind:checked={config.ban}>
-                    ban
-                </label>
+            <div transition:slide class="inputComponent">
+                <input class="check" type="text" disabled={!config.cheer || !config.animCheer} placeholder="Lien" bind:value={cheersValue}/><button class="button" on:click={() => {addCheers(cheersValue)}}>add</button>
             </div>
-
-            <div>
-                <label>
-                    <input type=checkbox bind:checked={config.timeout}>
-                    Time out
-                </label>
+            <div class="list">
+                {#each cheers as value (value)}
+                    <p transition:scale on:click={() => {removeCheers(value)}}>{value.substr(value.substr(0, 4080).lastIndexOf("/"), value.length)}</p>
+                {/each}
             </div>
-
-            <div>
-                <label>
-                    <input type=checkbox bind:checked={config.deleted}>
-                    deleted
-                </label>
-            </div>
-
         </div>
 
-        <h2>Design:</h2>
-        <div class="check">
-            <div id="radio">
-                <label>
-                    <input type=radio bind:group={config.left} name="scoops" value={1}>
-                    Left
-                </label>
-                
-                <label>
-                    <input type=radio bind:group={config.left} name="scoops" value={0}>
-                    Right
-                </label>
-            </div>
-
-            <div>
-                <label>
-                    <input type=checkbox bind:checked={config.dark}>
-                    Dark mode
-                </label>
-            </div>
-
-            <div>
-                <label>
+        <div class="element">
+            <h2>Avatar</h2>
+            <div class="checkBox topBorder">
+                <label class="labelDiv">
                     <input type=checkbox bind:checked={config.avatar}>
                     Avatar
                 </label>
             </div>
-
-            {#if config.subscription}
-                <div>
-                    <label>
-                        <input type=checkbox bind:checked={config.animSub}>
-                        Animation Sub
-                    </label>
-                </div>
-            {/if}
-
-            {#if config.subgift}
-                <div>
-                    <label>
-                        <input type=checkbox bind:checked={config.animSubGift}>
-                        Animation Sub Gift
-                    </label>
-                </div>
-            {/if}
-
-            {#if config.cheer}
-                <div>
-                    <label>
-                        <input type=checkbox bind:checked={config.animCheer}>
-                        Animation Cheer
-                    </label>
-                </div>
-            {/if}
+            <div transition:slide class="inputComponent">
+                <input class="check" type="text" disabled={!config.avatar} placeholder="Lien" bind:value={avatarValue}/><button class="button" on:click={() => {addAvatar(avatarValue)}}>add</button>
+            </div>
+            <div class="list">
+                {#each avatar as value (value)}
+                    <p transition:scale on:click={() => {removeAvatar(value)}}>{value.substr(value.substr(0, 4080).lastIndexOf("/"), value.length)}</p>
+                {/each}
+            </div>
         </div>
-    </div>
 
-    <div>
+        <div class="element">
+            <h2>Style</h2>
+            <div class="gridCenterTwo">
+                <div class="checkBox allBorder">
+                    <label>
+                        <input type=checkbox bind:checked={config.dark}>
+                        Dark mode
+                    </label>
+                </div>
+
+                <div class="checkBox allBorder">
+                    <label>
+                        <input type=radio bind:group={config.left} name="scoops" value={1}>
+                        Left
+                    </label>
+                    
+                    <label>
+                        <input type=radio bind:group={config.left} name="scoops" value={0}>
+                        Right
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="element">
+            <h2>Moderation</h2>
+            <div class="gridCenter">
+                <div class="checkBox allBorder">
+                    <label>
+                        <input type=checkbox bind:checked={config.ban}>
+                        ban
+                    </label>
+                </div>
+                <div class="checkBox allBorder">
+                    <label>
+                        <input type=checkbox bind:checked={config.timeout}>
+                        Time out
+                    </label>
+                </div>
+                <div class="checkBox allBorder">
+                    <label>
+                        <input type=checkbox bind:checked={config.deleted}>
+                        deleted
+                    </label>
+                </div>
+            </div>
+        </div>
+
         {#if chaine.length > 0}
-        <h2>Lien:</h2>
-            <p id='lien' on:click={copy}>{urlGenerator}?chaine={chaine.join()}{config.message ? ("&message=true") : ("")}{config.subscription ? ("&subscription=true") : ("")}{config.deleted ? ("&deleted=true") : ("")}{config.subgift ? ("&subgift=true") : ("")}{config.cheer ? ("&cheer=true") : ("")}{config.ban ? ("&ban=true") : ("")}{config.timeout ? ("&timeout=true") : ("")}{config.dark ? ("&dark=true") : ("")}{config.avatar ? ("&avatar=true") : ("")}{config.left ? ("&left=true") : ("")}{config.animSub ? ("&animsub=true") : ("")}{config.animSubGift ? ("&animsubgift=true") : ("")}{config.animCheer ? ("&animcheer=true") : ("")}</p>
-            <button on:click={copy}>copy link</button>
+            <div class="buttonlink">
+                <button class="generate" on:click={copy}>Copy Link</button>
+                <a target="_blank" href={`${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.dark ? ("&dark=true") : ("")}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}${avatar.length ? (`&customAvatar=${avatar.join()}`) : ("")}`}><button class="generate">Open Link</button></a>
+            </div>
         {/if}
+
+    </div>
+    <div class="visuel">
+        <Animation />
     </div>
 </main>
 
 <style>
-    main{
-        display: grid;
-        grid-template-columns: 0.5fr 1fr;
+    :root{
+        --accentuationColor: rgb(149, 0, 255)
     }
 
-    #radio label{
-        margin-right: 1.5em;
-    }
-    :root {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    main {
+        width: 100%;
+        display: flex;
     }
 
-    #lien {
-        margin: 0;
-        width: 1fr;
-        max-width: 40em;
+    h1{
+        color: var(--accentuationColor);
+        text-align: center;
     }
 
-    div{
-        /* border-bottom: 1px solid black; */
-        color: #999CA0;
+    .buttonlink{
+        display: flex;
+        gap: 1em;
     }
 
-    .check{
-        margin-left: 10px;
+    .buttonlink a{
+        width: 100%;
     }
 
-    input {
-        color: #999CA0;
+    .generate {
         padding: 4px 6px 4px 6px;
-        background: #2C2828;
-        border: 0px;
-        box-shadow: 0px 48px 48px -6px rgba(0, 0, 0, 0.88), 0px 0px 1px rgba(0, 0, 0, 0.72);
+        background: var(--accentuationColor);
+
         border-radius: 12px;
-        margin: 10px 10px 10px 0px;
+        border-radius: 0.375rem 0.375rem 0.375rem 0.375rem;
+        border: 0px;
+        width: 100%;
+        padding: 10px 0px 10px 0px;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-top: 1rem;
+        transition: transform 430ms ease-in-out;
+        color: black;
+        /* margin-top: 1rem; */
+        /* margin: 10px 10px 10px 0px; */
     }
 
-    button{
-        color: #999CA0;
+    .generate:hover {
         padding: 4px 6px 4px 6px;
-        background: #2C2828;
-        border: 0px;
-        box-shadow: 0px 48px 48px -6px rgba(0, 0, 0, 0.88), 0px 0px 1px rgba(0, 0, 0, 0.72);
+        background: rgb(183, 82, 255);
+
         border-radius: 12px;
-        margin: 10px 10px 10px 0px;
+        border-radius: 0.375rem 0.375rem 0.375rem 0.375rem;
+        border: 0px;
+        width: 100%;
+        padding: 10px 0px 10px 0px;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-top: 1rem;
+        transform: scale(1.02);
+        /* margin-top: 1rem; */
+        /* margin: 10px 10px 10px 0px; */
     }
 
-    button:hover{
-        background: #595454;
+    h2{
+        color: white;
+        margin: 0%;
+        text-align: center;
     }
 
-    h1, h2, p {
-        color: #999CA0;
+    .config{
+        padding: 0.5rem;
+        width: 50%;
+    }
+
+    :global(body){
+        background-color: #111111;
+    }
+
+    .visuel{
+        width: 50%;
+        /* background-color: blue; */
+    }
+
+    .element {
+        padding: 1.5rem;
+        --tw-bg-opacity: 1;
+        background-color: rgba(0,0,0,var(--tw-bg-opacity));
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .element div {
+        --tw-text-opacity: 1;
+        color: rgba(0,0,0,var(--tw-text-opacity));
+    }
+
+    .input {
+        margin-top: 1rem;
+    }
+
+    .checkBox {
+        margin-top: 1rem;
+    }
+
+    .element .checkBox {
+        font-weight: 600;
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        /* --tw-bg-opacity: 1; */
+        /* background-color: var(--accentuationColor); */
+        display: flex;
+        width: max-content;
+        /* padding: 10px; */
+        /* border-radius: 0.375rem; */
+        /* padding-top: 0.5rem;
+        padding-bottom: 0.5rem; */
+    }
+
+    .allBorder {
+        border-radius: 0.375rem;
+    }
+
+    .topBorder {
+        border-radius: 0.375rem 0.375rem 0rem 0rem;
+    }
+
+    .inputComponent input{
+        height: 48px !important;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        --tw-bg-opacity: 1;
+        background-color: rgba(51,51,51,var(--tw-bg-opacity));
+        color: white;
+        border-radius: 0rem 0rem 0rem 0.375rem;
+        resize: none;
+        /* width: 100%; */
+        box-sizing: border-box;
+        border: 0ch;
+        outline: 0px var(--accentuationColor) solid;
+        white-space: nowrap;
+        width: inherit;
+    }
+
+    input:disabled {
+        background-color: rgba(30,30,30,var(--tw-bg-opacity));
+    }
+
+    .inputComponent {
+        width: 100%;
+        align-items: center;
+        display: flex;
+    }
+
+    .inputComponent button {
+        height: 48px;
+        background-color: var(--accentuationColor);
+        border: 0ch;
+        border-radius: 0rem 0.375rem 0.375rem 0rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        font-weight: 500;
+        font-size: 1.25rem;
+        margin-left: 2px;
+        color: black;
+    }
+
+    .inputComponent button:active {
+        height: 48px;
+        background-color: rgba(256,211,214,var(--tw-bg-opacity));
+        border: 0ch;
+        border-radius: 0rem 0.375rem 0.375rem 0rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        font-weight: 500;
+        font-size: 1.25rem;
+    }
+
+    .input p {
+        margin: 0%;
+        background-color: var(--accentuationColor);
+        width: max-content;
+        padding: 10px;
+        border-radius: 0.375rem 0.375rem 0rem 0rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+    .list p {
+        margin: 0%;
+        background-color: var(--accentuationColor);
+        width: max-content;
+        padding: 10px;
+        border-radius: 0.375rem 0.375rem 0rem 0rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        font-weight: 600;
+        font-size: 1.25rem;
     }
 
     .list{
         display: flex;
+        gap: 0.5em;
+        flex-wrap: wrap;
         border-bottom: 0px solid black;
+        margin-top: 1rem;
         /* display: grid;
         grid-template-columns: repeat(5, auto) */
     }
 
     .list p{
         padding: 4px 6px 4px 6px;
-        background: #2C2828;
+        background: var(--accentuationColor);
 
-        box-shadow: 0px 48px 48px -6px rgba(0, 0, 0, 0.88), 0px 0px 1px rgba(0, 0, 0, 0.72);
         border-radius: 12px;
-        margin: 10px 10px 10px 0px;
+        border-radius: 0.375rem 0.375rem 0.375rem 0.375rem;
+        /* margin-top: 1rem; */
+        /* margin: 10px 10px 10px 0px; */
     }
 
     .list p:hover{
         background: #7b0000;
     }
 
-    :global(body) {
-		background-color: #1F1F1F;
-	}
+    .checkBox .labelDiv {
+        /* border-left: 2px black solid; */
+        margin-right: 10px;
+        font-weight: 600;
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        --tw-bg-opacity: 1;
+        background-color: var(--accentuationColor);
+        width: max-content;
+        padding: 10px;
+        border-radius: 0.375rem 0.375rem 0rem 0rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
 
-    @media screen and (max-width: 850px) {
-        main{
-            display: grid;
-            grid-template-columns: auto;
+    .checkBox label {
+        /* border-left: 2px black solid; */
+        margin-right: 10px;
+        font-weight: 600;
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+        --tw-bg-opacity: 1;
+        background-color: var(--accentuationColor);
+        width: max-content;
+        padding: 10px;
+        border-radius: 0.375rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .gridCenter {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-items: center;
+    }
+
+    .gridCenterTwo{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+    }
+
+    * {
+        box-sizing: border-box;
+        /* font-family: proxima-nova; */
+    }
+
+    @media screen and (max-width: 980px) {
+        .visuel{
+            display: none;
+        }
+
+        .config{
+            width: 100%;
+        }
+    }
+
+    @media screen and (max-width: 440px) {
+        .gridCenter{
+            grid-template-columns: 1fr;
         }
     }
 
