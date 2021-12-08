@@ -20,7 +20,24 @@
     let subGiftCustomValue = ""
     let cheersValue = ""
     let avatarValue = ""
-    let config = {message:false,subscription:false,deleted:false,subgift:false,cheer:false,ban:false,timeout:false,dark:false,avatar:false,left:0,animSub:false,animSubGift:false,animCheer:false}
+    let config = {
+            message:false,
+            maxdelete:8,
+            timemessage:1000,
+            save:false,
+            subscription:false,
+            deleted:false,
+            subgift:false,
+            cheer:false,
+            ban:false,
+            timeout:false,
+            theme:0,
+            avatar:false,
+            left:0,
+            animSub:false,
+            animSubGift:false,
+            animCheer:false
+        }
 
     function addChaine(value)
     {
@@ -100,11 +117,7 @@
 
     function copy()
     {
-        // var text = document.getElementById("lien").innerHTML.replace("amp;","");
-
-        console.log(`${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.dark ? ("&dark=true") : ("")}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}`)
-
-        let link = `${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.dark ? ("&dark=true") : ("")}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}${avatar.length ? (`&customAvatar=${avatar.join()}`) : ("")}`
+        let link = `${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${(config.maxdelete >= 1 && config.maxdelete <= 100) ? (`&maxdelete=${config.maxdelete}`) : ("")}${!(isNaN(config.timemessage)) ? (`&timemessage=${config.timemessage}`) : ("")}${config.save ? (`&save=true`) : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.theme == 1 ? ("&dark=true") : (`${config.theme == 2 ? ("&rgb=true") : ("")}`)}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}${avatar.length ? (`&customAvatar=${avatar.join()}`) : ("")}`
 
         navigator.clipboard.writeText(link).then(function() {
             console.log("Copie reussi")
@@ -146,7 +159,23 @@
                     <input type=checkbox bind:checked={config.message}>
                     Messages
                 </label>
+                {#if config.message}
+                    <label transition:scale>
+                        <input type=checkbox bind:checked={config.save}>
+                        Garder les messages
+                    </label>
+                {/if}
             </div>
+            {#if config.message}
+                <div transition:slide class="checkBox topBorder">
+                    <label class="labelDiv">
+                        Nombre de message max
+                    </label>
+                </div>
+                <div transition:slide class="inputComponentNumber">
+                    <input class="check" type="number" placeholder="10" min="1" max="100" bind:value={config.maxdelete}/>
+                </div>
+            {/if}
             <div class="checkBox topBorder">
                 <label class="labelDiv">
                     <input type=checkbox bind:checked={config.subscription}>
@@ -230,10 +259,27 @@
         <div class="element">
             <h2>Style</h2>
             <div class="gridCenterTwo">
-                <div class="checkBox allBorder">
+                <!-- <div class="checkBox allBorder">
                     <label>
                         <input type=checkbox bind:checked={config.dark}>
                         Dark mode
+                    </label>
+                </div> -->
+
+                <div class="checkBox allBorder">
+                    <label>
+                        <input type=radio bind:group={config.theme} name="theme" value={0}>
+                        White
+                    </label>
+
+                    <label>
+                        <input type=radio bind:group={config.theme} name="theme" value={1}>
+                        Dark
+                    </label>
+                    
+                    <label>
+                        <input type=radio bind:group={config.theme} name="theme" value={2}>
+                        RGB
                     </label>
                 </div>
 
@@ -278,7 +324,7 @@
         {#if chaine.length > 0}
             <div class="buttonlink">
                 <button class="generate" on:click={copy}>Copy Link</button>
-                <a target="_blank" href={`${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.dark ? ("&dark=true") : ("")}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}${avatar.length ? (`&customAvatar=${avatar.join()}`) : ("")}`}><button class="generate">Open Link</button></a>
+                <a target="_blank" href={`${urlGenerator}?chaine=${chaine.join()}${config.message ? ("&message=true") : ("")}${config.subscription ? ("&subscription=true") : ("")}${(config.maxdelete >= 1 && config.maxdelete <= 100) ? (`&maxdelete=${config.maxdelete}`) : ("")}${!(isNaN(config.timemessage)) ? (`&timemessage=${config.timemessage}`) : ("")}${config.save ? (`&save=true`) : ("")}${config.deleted ? ("&deleted=true") : ("")}${config.subgift ? ("&subgift=true") : ("")}${config.cheer ? ("&cheer=true") : ("")}${config.ban ? ("&ban=true") : ("")}${config.timeout ? ("&timeout=true") : ("")}${config.theme == 1 ? ("&dark=true") : (`${config.theme == 2 ? ("&rgb=true") : ("")}`)}${config.avatar ? ("&avatar=true") : ("")}${config.left ? ("&left=true") : ("")}${config.animSub ? ("&animsub=true") : ("")}${config.animSubGift ? ("&animsubgift=true") : ("")}${config.animCheer ? ("&animcheer=true") : ("")}${subCustom.length ? (`&customSub=${subCustom.join()}`) : ("")}${subGiftCustom.length ? (`&customSubGif=${subGiftCustom.join()}`) : ("")}${cheers.length ? (`&customCheers=${cheers.join()}`) : ("")}${avatar.length ? (`&customAvatar=${avatar.join()}`) : ("")}`}><button class="generate">Open Link</button></a>
             </div>
         {/if}
 
@@ -430,6 +476,34 @@
         white-space: nowrap;
         width: inherit;
     }
+
+    .inputComponentNumber input{
+        height: 48px !important;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        --tw-bg-opacity: 1;
+        background-color: rgba(51,51,51,var(--tw-bg-opacity));
+        color: white;
+        border-radius: 0rem 0.375rem 0.375rem 0.375rem;
+        resize: none;
+        /* width: 100%; */
+        box-sizing: border-box;
+        border: 0ch;
+        outline: 0px var(--accentuationColor) solid;
+        white-space: nowrap;
+        width: inherit;
+    }
+
+    .inputComponentNumber {
+        width: 100%;
+        align-items: center;
+        display: flex;
+    }
+
 
     input:disabled {
         background-color: rgba(30,30,30,var(--tw-bg-opacity));

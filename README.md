@@ -1,6 +1,43 @@
-# Configuration du Bouns interactive Twitch Tchat
+# Bouns Tchat 
 
-vous retrouverai ici le site pour configuré le petit avatar qui peux vous accompagné sur votre stream
 
-disponible à cette adresse:
-[https://fabienbounoir.github.io/Bouns-Interative-tchat-config](https://fabienbounoir.github.io/Bouns-Interative-tchat-config)
+[![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)  [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](http://forthebadge.com)
+
+Projet permettant d'afficher les informations provenant d'un Tchat Twitch que se sois:
+- Les messages
+- Les Subs
+- Les Subs gift
+- Les Cheers
+- Les Bans
+- Les Time Out
+- ...
+
+![](https://i.imgur.com/kQJlAap.png "Message send")
+![](https://i.imgur.com/tW6wW2z.png "Sub gift")
+Ce projet a été realisé pour etre intégré dans une source navigateur sur OBS Studio, Streamlabs, ...
+
+### aperçus
+
+
+
+## Comment le tester ?
+
+Pour le tester rien de plus simple il suffit de se rendre sur [La page de configuration](https://fabienbounoir.github.io/Bouns-Interative-tchat-config)
+
+### Pré-requis
+
+- Avoir une chaine Twitch
+
+
+## Fabriqué avec
+
+* [Svelte.dev/](https://svelte.dev/) - Framework (front-end)
+* [tmijs.com/](https://tmijs.com/) - Tchat Twitch
+
+## Versions
+
+**Dernière version :** 1.0
+
+## Auteurs
+Listez le(s) auteur(s) du projet ici !
+* [@FabienBounoir](https://github.com/FabienBounoir)
