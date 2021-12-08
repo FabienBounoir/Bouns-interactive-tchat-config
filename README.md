@@ -12,13 +12,12 @@ Projet permettant d'afficher les informations provenant d'un Tchat Twitch que se
 - Les Time Out
 - ...
 
-![](https://i.imgur.com/kQJlAap.png "Message send")
-![](https://i.imgur.com/tW6wW2z.png "Sub gift")
 Ce projet a été realisé pour etre intégré dans une source navigateur sur OBS Studio, Streamlabs, ...
 
 ### aperçus
 
-
+![](https://i.imgur.com/Hr4qv9G.png "Message send")
+![](https://i.imgur.com/tW6wW2z.png "Sub gift")
 
 ## Comment le tester ?
 
