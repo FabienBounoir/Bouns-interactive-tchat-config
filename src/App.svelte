@@ -132,11 +132,11 @@
         avatarValue = "";
     }
 
-    function removeBacklistUser(value) {
+    function removeBlacklistUser(value) {
         backlistUser = backlistUser.filter((items) => items != value);
     }
 
-    function addBacklistUser(value) {
+    function addBlacklistUser(value) {
         if (value.length == 0) return;
         if (backlistUser.indexOf(value.toLowerCase()) !== -1) return;
 
@@ -147,7 +147,7 @@
     function copy() {
         let link = `${urlGenerator}?chaine=${chaine.join()}${
             config.message ? "&message=true" : ""
-        }${
+        }${config.badge ? "&badge=true" : ""}${
             config.maxdelete >= 1 && config.maxdelete <= 100
                 ? `&maxdelete=${config.maxdelete}`
                 : ""
@@ -236,6 +236,12 @@
                     <label transition:scale>
                         <input type="checkbox" bind:checked={config.save} />
                         Garder les messages
+                    </label>
+                {/if}
+                {#if config.message}
+                    <label transition:scale>
+                        <input type="checkbox" bind:checked={config.badge} />
+                        Badge
                     </label>
                 {/if}
             </div>
@@ -568,7 +574,7 @@
                     /><button
                         class="button"
                         on:click={() => {
-                            addBacklistUser(chaineValue);
+                            addBlacklistUser(chaineValue);
                         }}>add</button
                     >
                 </div>
@@ -577,7 +583,7 @@
                         <p
                             transition:scale
                             on:click={() => {
-                                removeBacklistUser(value);
+                                removeBlacklistUser(value);
                             }}
                         >
                             {value}
@@ -594,7 +600,9 @@
                     target="_blank"
                     href={`${urlGenerator}?chaine=${chaine.join()}${
                         config.message ? "&message=true" : ""
-                    }${config.subscription ? "&subscription=true" : ""}${
+                    }${config.badge ? "&badge=true" : ""}${
+                        config.subscription ? "&subscription=true" : ""
+                    }${
                         config.maxdelete >= 1 && config.maxdelete <= 100
                             ? `&maxdelete=${config.maxdelete}`
                             : ""
