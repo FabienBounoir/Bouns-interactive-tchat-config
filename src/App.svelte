@@ -15,6 +15,7 @@
     let subGiftCustom = [];
     let cheers = [];
     let avatar = [];
+    let backlistUser = [];
 
     let chaineValue = "";
     let subCustomValue = "";
@@ -131,6 +132,18 @@
         avatarValue = "";
     }
 
+    function removeBacklistUser(value) {
+        backlistUser = backlistUser.filter((items) => items != value);
+    }
+
+    function addBacklistUser(value) {
+        if (value.length == 0) return;
+        if (backlistUser.indexOf(value.toLowerCase()) !== -1) return;
+
+        backlistUser = [...backlistUser, value.toLowerCase()];
+        avatarValue = "";
+    }
+
     function copy() {
         let link = `${urlGenerator}?chaine=${chaine.join()}${
             config.message ? "&message=true" : ""
@@ -153,8 +166,8 @@
         }${config.animSub ? "&animsub=true" : ""}${
             config.animSubGift ? "&animsubgift=true" : ""
         }${config.animCheer ? "&animcheer=true" : ""}${
-            subCustom.length ? `&customSub=${subCustom.join()}` : ""
-        }${
+            backlistUser.length > 0 ? `&backlist=${backlistUser.join()}` : ""
+        }${subCustom.length ? `&customSub=${subCustom.join()}` : ""}${
             subGiftCustom.length ? `&customSubGif=${subGiftCustom.join()}` : ""
         }${cheers.length ? `&customCheers=${cheers.join()}` : ""}${
             avatar.length ? `&customAvatar=${avatar.join()}` : ""
@@ -471,6 +484,26 @@
                         />
                         Flat Dark
                     </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            bind:group={config.theme}
+                            name="theme"
+                            value="linearrgb"
+                        />
+                        linear RGB
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            bind:group={config.theme}
+                            name="theme"
+                            value="bluepurple"
+                        />
+                        bleu violet
+                    </label>
                 </div>
             </div>
         </div>
@@ -522,6 +555,38 @@
             </div>
         </div>
 
+        <div class="element">
+            <h2>blacklist User</h2>
+            <div class="input">
+                <p>User a blacklist</p>
+                <div class="inputComponent">
+                    <input
+                        class="check"
+                        type="text"
+                        placeholder="Username"
+                        bind:value={chaineValue}
+                    /><button
+                        class="button"
+                        on:click={() => {
+                            addBacklistUser(chaineValue);
+                        }}>add</button
+                    >
+                </div>
+                <div class="list">
+                    {#each backlistUser as value (value)}
+                        <p
+                            transition:scale
+                            on:click={() => {
+                                removeBacklistUser(value);
+                            }}
+                        >
+                            {value}
+                        </p>
+                    {/each}
+                </div>
+            </div>
+        </div>
+
         {#if chaine.length > 0}
             <div class="buttonlink">
                 <button class="generate" on:click={copy}>Copy Link</button>
@@ -546,10 +611,12 @@
                     }&theme=${config.theme}${
                         config.avatar ? "&avatar=true" : ""
                     }${config.left ? "&left=true" : ""}${
-                        config.animSub ? "&animsub=true" : ""
-                    }${config.animSubGift ? "&animsubgift=true" : ""}${
-                        config.animCheer ? "&animcheer=true" : ""
-                    }${
+                        backlistUser.length > 0
+                            ? `&backlist=${backlistUser.join()}`
+                            : ""
+                    }${config.animSub ? "&animsub=true" : ""}${
+                        config.animSubGift ? "&animsubgift=true" : ""
+                    }${config.animCheer ? "&animcheer=true" : ""}${
                         subCustom.length ? `&customSub=${subCustom.join()}` : ""
                     }${
                         subGiftCustom.length
@@ -662,6 +729,10 @@
 
     .input {
         margin-top: 1rem;
+    }
+
+    input {
+        accent-color: red;
     }
 
     .checkBox {
